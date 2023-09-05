@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 import datetime
 
 #各类自定超参数
-iter_num = 2000 #PLA算法的迭代次数
+iter_num = 20 #PLA算法的迭代次数
 data_size = 200 #数据集的大小
+n_PLA = 0.9 #PLA算法的学习率
 
 #生成数据所用的均值向量与协方差矩阵
-X1_mean = np.array([1,0])
+X1_mean = np.array([-2,0])
 X1_cov = np.array([[1,0],[0,1]])
-X2_mean = np.array([0,1])
+X2_mean = np.array([0,2])
 X2_cov = np.array([[1,0],[0,1]])
 
 #初始化PLA算法与Pocket算法的权重
@@ -19,7 +20,7 @@ W0_Pocket = np.array([1.0,1.0,1.0])
 
 #根据均值向量与协方差矩阵生成数据
 def GenData(data_size):
-    np.random.seed(1)
+    np.random.seed()
     X1 = np.random.multivariate_normal(X1_mean,X1_cov,data_size)
     Y1 = np.ones(data_size)
     X2 = np.random.multivariate_normal(X2_mean,X2_cov,data_size)
@@ -57,7 +58,7 @@ def PLA(X,Y,W0,iter_num):
         correctFlag = True
         for j in range(len(X)):
             if Sign(np.dot(X[j],W)) != Y[j]:
-                W += Y[j]*X[j]
+                W += n_PLA*Y[j]*X[j]
                 correctFlag = False
         if correctFlag:
             print("PLA算法实际迭代次数：",i)
@@ -80,7 +81,7 @@ def Pocket(X,Y,W0,iter_num):
         correctFlag = True
         for j in range(len(X)):
             if Sign(np.dot(X[j],W)) != Y[j]:
-                W += Y[j]*X[j]
+                W += n_PLA*Y[j]*X[j]
                 for k in range(len(X)):
                     if Sign(np.dot(X[k],W)) != Y[k]:
                         W_error += 1
